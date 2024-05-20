@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:ui';
 import 'tela_resultado.dart';
-import 'package:circular_countdown_timer/circular_countdown_timer.dart'; 
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 
 class QuizFantasia extends StatefulWidget {
   @override
@@ -10,50 +10,42 @@ class QuizFantasia extends StatefulWidget {
 
 class _QuizFantasiaState extends State<QuizFantasia> {
   int questionIndex = 0;
-  int score = 0;
+  int pontuacao = 0;
   int perguntaAtual = 1;
-  int totalTime = 60;
-  int remainingTime = 0;
-  Timer? timer;
+  final int duracao = 10;
+  final CountDownController controle = CountDownController();
 
-  List <Question> questions = [
-    Question('blabla',
+  List<Question> questions = [
+    Question(
+      'blabla',
       ['dgshd', 'gyag', 'odhisg', 'bajh'],
-      'dgshd'
+      'dgshd',
+    ),
+    Question(
+      'b',
+      ['dgshd', 'gyag', 'odhisg', 'bajh'],
+      'dgshd',
     ),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    remainingTime = totalTime;
+  void checkAnswer(String userAnswer) {
+    String correctAnswer = questions[questionIndex].correctAnswer;
+    int tempoPassado = duracao - int.parse(controle.getTime() ?? '0');
+
+    setState(() {
+      if (userAnswer == correctAnswer) {
+        int pontuacaoAdd = 5 + tempoPassado;
+        pontuacao += pontuacaoAdd;
+      }
+      if (questionIndex < questions.length - 1) {
+        questionIndex++;
+        perguntaAtual++;
+        controle.restart();
+      } else {
+
+      }
+    });
   }
-
-void startTimer() {
-  timer = Timer.periodic(Duration(seconds: 1), (timer) {
-    if (remainingTime > 0) {
-      setState(() {
-        remainingTime--;
-      });
-    } else {
-      nextQuestion();
-    }
-  });
-}
-
-void nextQuestion(){
-  setState((){
-    questionIndex++;
-    perguntaAtual++;
-    remainingTime = totalTime;
-  });
-}
-
-@override
-void dispose(){
-  timer?.cancel();
-  super.dispose();
-}
 
   @override
   Widget build(BuildContext context) {
@@ -65,40 +57,41 @@ void dispose(){
         elevation: 0,
         title: Row(
           children: [
-            Text(
-              '  $perguntaAtual / ${questions.length}',
-              style: const TextStyle(fontSize: 30,
-                color: Colors.black
-              ),
-            ),
             const Spacer(),
             CircularCountDownTimer(
-              duration: Duration(seconds: totalTime),
-              controller: CountDownController(),
-              width: 200,
-              height: 200,
-              ringColor: Colors.grey,
-              fillColor: Colors.blue,
+              duration: duracao,
+              initialDuration: 0,
+              controller: controle,
+              width: 45,
+              height: 45,
+              ringColor: Colors.black,
+              fillColor: Colors.blue.shade300,
               backgroundColor: Colors.transparent,
-              ringGradient: null,
-              fillGradient: null,
-              backgroundGradient: null,
+              strokeWidth: 10.0,
               strokeCap: StrokeCap.round,
               textStyle: const TextStyle(
-                fontSize: 24.0,
-                color:Colors.black,
+                fontSize: 20.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
-              textFormat: CountDownTextFormat.S,
-              isReverse: false,
-              isReverseAnimation: false,
-              isTimerTextShown: false,
-              autoStart: false,
+              textFormat: CountdownTextFormat.S,
+              isReverse: true,
+              isReverseAnimation: true,
+              isTimerTextShown: true,
+              autoStart: true,
               onStart: () {},
-              onComplete: (){
-                nextQuestion();
+              onComplete: () {
+                if (questionIndex < questions.length - 1) {
+                  setState(() {
+                    questionIndex++;
+                    perguntaAtual++;
+                  });
+                  controle.restart();
+                } else {
+                 
+                }
               },
-              onChange: (String timeStamp){},
-              timeFormatterFunction: null,
+              onChange:(String timeStamp) {},
             ),
           ],
         ),
@@ -111,9 +104,18 @@ void dispose(){
             width: double.infinity,
             height: double.infinity,
           ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              color: Colors.black.withOpacity(0),
+            ),
+          ),
           Center(
             child: Container(
-              color: Colors.white,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(20),
+              ),
               width: MediaQuery.of(context).size.width * 0.9,
               height: MediaQuery.of(context).size.height * 0.89,
               child: Column(
@@ -129,10 +131,32 @@ void dispose(){
                       ),
                     ),
                   ),
-                ]
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 330,
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          childAspectRatio: 3.8,
+                          mainAxisSpacing: 6,
+                          crossAxisSpacing: 10.3,
+                          children: questions[questionIndex].options.map((option){
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              child: ElevatedButton(onPressed: () => checkAnswer(option), 
+                              child: Text(option)),
+                            );
+                          }).toList()
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -144,5 +168,5 @@ class Question {
   final List<String> options;
   final String correctAnswer;
 
-  Question(this.questionText,  this.options,  this.correctAnswer);
+  Question(this.questionText, this.options, this.correctAnswer);
 }
