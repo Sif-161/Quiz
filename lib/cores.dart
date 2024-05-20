@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 
 class GradienteCores {
   static const List<Color> gradiente = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.purple,
+    Color.fromRGBO(3,1,18,1),
+    Color.fromRGBO(146,0,118,1),
+    Color.fromRGBO(54,0,41,1),
+
   ];
 
-  static LinearGradient createLinearGradient() {
-    return const LinearGradient(
+  static RadialGradient createGradient() {
+    return const RadialGradient(
       colors: gradiente,
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
+      center: Alignment.center,
+      radius: 4.8,
+      
     );
   }  
 }
