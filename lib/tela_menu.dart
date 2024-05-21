@@ -272,16 +272,16 @@ class _TelaMenuState extends State<TelaMenu> {
                       if(selectedValue != null && selectedValue2 !=null){     
                         if(selectedValue2 == 'Fantasia'){
                            Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => QuizFantasia()));
+                          MaterialPageRoute(builder: (context) => QuizFantasia(selectedValue!, selectedValue2!)));
                         }else if(selectedValue2 == 'Ação'){
                           /* Navigator.push(context,
-                           MaterialPageRoute(builder: (context) => TelaAcao()));*/
+                           MaterialPageRoute(builder: (context) => TelaAcao(selectedValue!)));*/
                         }else if(selectedValue2 == 'Terror'){
                           /* Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TelaTerror()));*/
+                          MaterialPageRoute(builder: (context) => TelaTerror(selectedValue!)));*/
                         }else{
                           /* Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TelaScifi()));*/
+                          MaterialPageRoute(builder: (context) => TelaScifi(selectedValue!)));*/
                         }
                       }else{
                         ScaffoldMessenger.of(context).showSnackBar(

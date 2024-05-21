@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'tela_resultado.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'repositorio_questoes.dart';
 
 class QuizFantasia extends StatefulWidget {
+  final String dificuldade;
+  final String genero;
+
+  const QuizFantasia(this.dificuldade, this.genero);
+
   @override
   _QuizFantasiaState createState() => _QuizFantasiaState();
 }
@@ -13,27 +19,23 @@ class _QuizFantasiaState extends State<QuizFantasia> {
   int pontuacao = 0;
   int perguntaAtual = 1;
   final int duracao = 10;
+  int perguntaAcertada = 0;
   final CountDownController controle = CountDownController();
 
-  List<Question> questions = [
-    Question(
-      'blabla',
-      ['dgshd', 'gyag', 'odhisg', 'bajh'],
-      'dgshd',
-    ),
-    Question(
-      'b',
-      ['dgshd', 'gyag', 'odhisg', 'bajh'],
-      'dgshd',
-    ),
-  ];
+  late List <Question> questions;
 
+  @override
+  void initState(){
+    super.initState();
+    questions = RepositorioQuestoes.getQuestions(widget.dificuldade, widget.genero);
+  }
   void checkAnswer(String userAnswer) {
     String correctAnswer = questions[questionIndex].correctAnswer;
     int tempoPassado = duracao - int.parse(controle.getTime() ?? '0');
 
     setState(() {
       if (userAnswer == correctAnswer) {
+        perguntaAcertada++;
         int pontuacaoAdd = 5 + tempoPassado;
         pontuacao += pontuacaoAdd;
       }
@@ -42,7 +44,8 @@ class _QuizFantasiaState extends State<QuizFantasia> {
         perguntaAtual++;
         controle.restart();
       } else {
-
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => TelaResultado(pontuacao, questions.length, perguntaAcertada))); 
       }
     });
   }
@@ -88,7 +91,8 @@ class _QuizFantasiaState extends State<QuizFantasia> {
                   });
                   controle.restart();
                 } else {
-                 
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => TelaResultado(pontuacao, questions.length, perguntaAcertada)));
                 }
               },
               onChange:(String timeStamp) {},
@@ -161,12 +165,4 @@ class _QuizFantasiaState extends State<QuizFantasia> {
       ),
     );
   }
-}
-
-class Question {
-  final String questionText;
-  final List<String> options;
-  final String correctAnswer;
-
-  Question(this.questionText, this.options, this.correctAnswer);
 }

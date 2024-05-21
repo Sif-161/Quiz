@@ -21,7 +21,7 @@ class TelaInicial extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text("Informação"),
+                      title: const Text("Info"),
                       content: const Text("Desenvolvido por: Odilon Struduth"),
                       actions: [
                         TextButton(
@@ -40,6 +40,8 @@ class TelaInicial extends StatelessWidget {
         ),
       ),
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: GradienteCores.createGradient(),
         ),
