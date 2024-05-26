@@ -3,7 +3,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:quiz/tela_inicial.dart';
 import 'Cores.dart';
 import 'quiz_terror.dart';
-import 'quiz_acao.dart';
 import 'quiz_fantasia.dart';
 import 'quiz_sci-fi.dart';
 
@@ -21,7 +20,6 @@ class _TelaMenuState extends State<TelaMenu> {
   String? selectedValue;
 
   final List<String> items2 = [
-    'Ação',
     'Terror',
     'Sci-Fi',
     'Fantasia',
@@ -256,7 +254,7 @@ class _TelaMenuState extends State<TelaMenu> {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children:[
-                        Icon(Icons.arrow_back_outlined),
+                        Icon(Icons.arrow_back_outlined, color: Colors.black),
                         SizedBox(width: 10),
                         Text(
                           'Voltar',
@@ -271,17 +269,14 @@ class _TelaMenuState extends State<TelaMenu> {
                     onPressed:(){
                       if(selectedValue != null && selectedValue2 !=null){     
                         if(selectedValue2 == 'Fantasia'){
-                           Navigator.push(context,
+                          Navigator.push(context,
                           MaterialPageRoute(builder: (context) => QuizFantasia(selectedValue!, selectedValue2!)));
-                        }else if(selectedValue2 == 'Ação'){
-                          /* Navigator.push(context,
-                           MaterialPageRoute(builder: (context) => TelaAcao(selectedValue!)));*/
                         }else if(selectedValue2 == 'Terror'){
-                          /* Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TelaTerror(selectedValue!)));*/
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => QuizTerror(selectedValue!, selectedValue2!)));
                         }else{
-                          /* Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TelaScifi(selectedValue!)));*/
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => QuizScifi(selectedValue!, selectedValue2!)));
                         }
                       }else{
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -295,7 +290,7 @@ class _TelaMenuState extends State<TelaMenu> {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children:[
-                        Icon(Icons.play_circle_outline),
+                        Icon(Icons.play_circle_outline, color: Colors.black),
                         SizedBox(width: 10),
                         Text(
                           'Iniciar',

@@ -44,7 +44,16 @@ class TelaResultado extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => TelaInicial()),
                 );
               }, 
-                child: const Text('Voltar', style: TextStyle(fontSize: 24)),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.home, color: Colors.black),
+                    Text(
+                      'Tela Inicial',
+                      style: TextStyle(fontSize: 24, color: Colors.black)
+                    ),
+                  ],
+                )
               )
 
             ]

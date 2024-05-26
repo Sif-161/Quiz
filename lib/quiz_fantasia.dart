@@ -7,7 +7,6 @@ import 'repositorio_questoes.dart';
 class QuizFantasia extends StatefulWidget {
   final String dificuldade;
   final String genero;
-
   const QuizFantasia(this.dificuldade, this.genero);
 
   @override
@@ -17,11 +16,11 @@ class QuizFantasia extends StatefulWidget {
 class _QuizFantasiaState extends State<QuizFantasia> {
   int questionIndex = 0;
   int pontuacao = 0;
-  int perguntaAtual = 1;
   final int duracao = 10;
   int perguntaAcertada = 0;
+  Map<String, Color> buttonColors = {};
   final CountDownController controle = CountDownController();
-
+  bool isPergunta = false;
   late List <Question> questions;
 
   @override
@@ -31,25 +30,34 @@ class _QuizFantasiaState extends State<QuizFantasia> {
   }
   void checkAnswer(String userAnswer) {
     String correctAnswer = questions[questionIndex].correctAnswer;
-    int tempoPassado = duracao - int.parse(controle.getTime() ?? '0');
+    int tempoRestante = int.parse(controle.getTime() ?? '0');
+    if(isPergunta) return;
 
     setState(() {
-      if (userAnswer == correctAnswer) {
-        perguntaAcertada++;
-        int pontuacaoAdd = 5 + tempoPassado;
-        pontuacao += pontuacaoAdd;
-      }
-      if (questionIndex < questions.length - 1) {
-        questionIndex++;
-        perguntaAtual++;
-        controle.restart();
-      } else {
-        Navigator.push(context,
-          MaterialPageRoute(builder: (context) => TelaResultado(pontuacao, questions.length, perguntaAcertada))); 
-      }
+        isPergunta = true;
+        if(userAnswer == correctAnswer) {
+          perguntaAcertada++;
+          int pontuacaoAdd = 5 + tempoRestante;
+          pontuacao += pontuacaoAdd;
+          buttonColors[userAnswer] = Colors.green;
+        } else {
+          buttonColors[userAnswer] = Colors.red;
+          buttonColors[correctAnswer] = Colors.green;
+        }
+        
+    });
+    Future.delayed(Duration(seconds: 1), () {
+      setState((){
+        if(questionIndex < questions.length - 1){
+          questionIndex++;
+          controle.restart();
+        } else {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TelaResultado(pontuacao, questions.length, perguntaAcertada)));
+        }
+        isPergunta = false;
+      });
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +95,6 @@ class _QuizFantasiaState extends State<QuizFantasia> {
                 if (questionIndex < questions.length - 1) {
                   setState(() {
                     questionIndex++;
-                    perguntaAtual++;
                   });
                   controle.restart();
                 } else {
@@ -103,13 +110,13 @@ class _QuizFantasiaState extends State<QuizFantasia> {
       body: Stack(
         children: [
           Image.asset(
-            'assets/images/castle.jpeg',
+            'images/fantasia/background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
             child: Container(
               color: Colors.black.withOpacity(0),
             ),
@@ -124,14 +131,25 @@ class _QuizFantasiaState extends State<QuizFantasia> {
               height: MediaQuery.of(context).size.height * 0.89,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    flex: 7,
+                    flex: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Image.asset(
+                        questions[questionIndex].image,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
                     child: Center(
                       child: Text(
                         questions[questionIndex].questionText,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 22, color: Colors.black),
+                        style: const TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                   ),
@@ -143,14 +161,14 @@ class _QuizFantasiaState extends State<QuizFantasia> {
                         width: 330,
                         child: GridView.count(
                           crossAxisCount: 2,
-                          childAspectRatio: 3.8,
+                          childAspectRatio: 3,
                           mainAxisSpacing: 6,
                           crossAxisSpacing: 10.3,
                           children: questions[questionIndex].options.map((option){
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
-                              child: ElevatedButton(onPressed: () => checkAnswer(option), 
-                              child: Text(option)),
+                              child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: buttonColors[option]), onPressed: () => checkAnswer(option), 
+                              child: Text(option, style: const TextStyle(color: Colors.black),)),
                             );
                           }).toList()
                         ),
