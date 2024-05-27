@@ -110,7 +110,7 @@ class _QuizTerrorState extends State<QuizTerror> {
       body: Stack(
         children: [
           Image.asset(
-            'images/terror/background.jpg',
+            'assets/images/terror/background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,

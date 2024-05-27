@@ -110,7 +110,7 @@ class _QuizScifiState extends State<QuizScifi> {
       body: Stack(
         children: [
           Image.asset(
-            'images/scifi/background.jpg',
+            'assets/images/scifi/background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,

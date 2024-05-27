@@ -110,7 +110,7 @@ class _QuizFantasiaState extends State<QuizFantasia> {
       body: Stack(
         children: [
           Image.asset(
-            'images/fantasia/background.jpg',
+            'assets/images/fantasia/background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
